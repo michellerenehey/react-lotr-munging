@@ -34,6 +34,20 @@ function App() {
       },
     });
     const data = await response.json();
+    const dataArr = data.docs.map((item) => [item.name, item.name.toLowerCase()]);
+    console.log(dataArr);
+    setFilms(dataArr);
+    // console.log(data);
+
+    // data.map((item) => {
+    //   item.docs;
+    // });
+    // console.log(data);
+    // const filmDataArr = filmData.map((film) => {
+    //   return film.name, film.boxOfficeRevenueInMillions, film.academyAwardNominations;
+    // });
+
+    // console.log(filmDataArr);
     // do a data.map to run through the data
 
     // here is what the data look slike
@@ -61,7 +75,7 @@ function App() {
     //   setLoading(false);
     // };
 
-    return [];
+    // return [];
     // can leave line 50 as it is (or delete it?)
   };
 
@@ -94,7 +108,7 @@ function App() {
         </header>
         <Switch>
           <Route exact path="/films">
-            <h1>hello 1</h1>
+            <FilmList films={films} />
           </Route>
           <Route exact path="/characters">
             <h1>hello 2</h1>
