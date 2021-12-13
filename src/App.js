@@ -17,7 +17,7 @@ function App() {
   const getFilms = async () => {
     // Add your code here!
     // x 1. Get data using fetch from https://the-one-api.dev/v2/movie/ (don't forget to set your header!)
-    // 2. Transform the response so that films contains nested arrays of:
+    // x 2. Transform the response so that films contains nested arrays of:
     //   - the film's title
     //   - the film's title "slugified" i.e. in all lower case, with words separated with dashes,
     //   - the box office total
@@ -25,8 +25,8 @@ function App() {
     // NOTE: make sure you look at the response from the server - it may not be consistent
     // [["The Lord of the Rings Series", "the-lord-of-the-rings-series", 2917, 30 ], ["The Hobbit Series", "the-hobit-series", 2932, 7]...]
 
-    // 3. Set the resulting transformation as state using setFilms
-    // 4. You'll know it works if the films show up on the page
+    // x 3. Set the resulting transformation as state using setFilms
+    // x 4. You'll know it works if the films show up on the page
 
     const response = await fetch('https://the-one-api.dev/v2/movie/', {
       headers: {
@@ -34,23 +34,16 @@ function App() {
       },
     });
     const data = await response.json();
-    const dataArr = data.docs.map((item) => [item.name, item.name.toLowerCase()]);
-    console.log(dataArr);
-    setFilms(dataArr);
-    // console.log(data);
+    const dataArr = data.docs;
+    const filmData = dataArr.map((film) => [
+      film.name,
+      film.name.toLowerCase().replace(/\s/g, '-'),
+      film.boxOfficeRevenueInMillions,
+      film.academyAwardNominations,
+    ]);
+    console.log(filmData);
+    setFilms(filmData);
 
-    // data.map((item) => {
-    //   item.docs;
-    // });
-    // console.log(data);
-    // const filmDataArr = filmData.map((film) => {
-    //   return film.name, film.boxOfficeRevenueInMillions, film.academyAwardNominations;
-    // });
-
-    // console.log(filmDataArr);
-    // do a data.map to run through the data
-
-    // here is what the data look slike
     //   {
     //     "_id": "5cd95395de30eff6ebccde56",
     //     "name": "The Lord of the Rings Series",
@@ -61,22 +54,6 @@ function App() {
     //     "academyAwardWins": 17,
     //     "rottenTomatoesScore": 94
     // }
-
-    // transform the above data to look like this:
-    // [["The Lord of the Rings Series", "the-lord-of-the-rings-series", 2917, 30 ], ["The Hobbit Series", "the-hobit-series", 2932, 7]...]
-
-    // setFilm in this function, too
-
-    // here is what the pokedex fetch looked like:
-    // const fetchData = async () => {
-    //   const data = await getPokemon(query, order, selectedType, currentPage);
-    //   // console.log(data);
-    //   setPokemonList(data.results);
-    //   setLoading(false);
-    // };
-
-    // return [];
-    // can leave line 50 as it is (or delete it?)
   };
 
   const getCharacters = async () => {
