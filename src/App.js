@@ -22,12 +22,13 @@ function App() {
       },
     });
     const data = await response.json();
+    console.log(data);
     const filmData = data.map((film) => [
       film.title,
       film.title.toLowerCase().replace(/\s/g, '-'),
       //.toLowerCase().split(what to split it on: ' ').join('-')
-      film.boxOfficeRevenueInMillions,
-      film.academyAwardNominations,
+      film.box_office_total,
+      film.academy_award_nominations,
     ]);
     setFilms(filmData);
   };
