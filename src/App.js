@@ -15,62 +15,66 @@ function App() {
   }, []);
 
   const getFilms = async () => {
-    // Add your code here!
-    // x 1. Get data using fetch from https://the-one-api.dev/v2/movie/ (don't forget to set your header!)
-    // x 2. Transform the response so that films contains nested arrays of:
-    //   - the film's title
-    //   - the film's title "slugified" i.e. in all lower case, with words separated with dashes,
-    //   - the box office total
-    //   - academy award nominations
-    // NOTE: make sure you look at the response from the server - it may not be consistent
-    // [["The Lord of the Rings Series", "the-lord-of-the-rings-series", 2917, 30 ], ["The Hobbit Series", "the-hobit-series", 2932, 7]...]
-
-    // x 3. Set the resulting transformation as state using setFilms
-    // x 4. You'll know it works if the films show up on the page
-
-    const response = await fetch('https://the-one-api.dev/v2/movie/', {
+    const response = await fetch(`${process.env.REACT_APP_SUPABASE_URL}/rest/v1/films`, {
       headers: {
-        Authorization: `Bearer ${process.env.REACT_APP_API_KEY}`,
+        apikey: process.env.REACT_APP_SUPABASE_KEY,
+        Authorization: `Bearer ${process.env.REACT_APP_SUPABASE_KEY}`,
       },
     });
     const data = await response.json();
-    const dataArr = data.docs;
-    const filmData = dataArr.map((film) => [
-      film.name,
-      film.name.toLowerCase().replace(/\s/g, '-'),
+    const filmData = data.map((film) => [
+      film.title,
+      film.title.toLowerCase().replace(/\s/g, '-'),
+      //.toLowerCase().split(what to split it on: ' ').join('-')
       film.boxOfficeRevenueInMillions,
       film.academyAwardNominations,
     ]);
-    console.log(filmData);
     setFilms(filmData);
-
-    //   {
-    //     "_id": "5cd95395de30eff6ebccde56",
-    //     "name": "The Lord of the Rings Series",
-    //     "runtimeInMinutes": 558,
-    //     "budgetInMillions": 281,
-    //     "boxOfficeRevenueInMillions": 2917,
-    //     "academyAwardNominations": 30,
-    //     "academyAwardWins": 17,
-    //     "rottenTomatoesScore": 94
-    // }
   };
 
   const getCharacters = async () => {
-    // Add your code here!
-    // 1. Get data using fetch from https://the-one-api.dev/v2/character/
-    // 2. Update the response data with the key `dates` which is a combination of
-    //    the `birth` key and the `death key` separated with a dash. If neither date
-    //    is provided, it should hold the string 'Unknown'
-    //    [
-    //       {name: 'Adanel', birth: "", death: "", dates: "Unknown", ...},
-    //       {name: 'Adrahil I', birth: "Before , TA 1944", death: "Late , Third Age", dates: "Before , TA 1944 - Late , Third Age", ...},
-    //       {name: 'Adrahil II', birth: "TA 2917", death: "TA 3010, dates: "TA 2917 - TA 3010", ...},
-    //    ]
-    // 3. Set the resulting transformation as state using setCharacters
-    // 4. You'll know it works if the characters show up on the page
-    return [];
+    const response = await fetch(`${process.env.REACT_APP_SUPABASE_URL}/rest/v1/characters`, {
+      headers: {
+        apikey: process.env.REACT_APP_SUPABASE_KEY,
+        Authorization: `Bearer ${process.env.REACT_APP_SUPABASE_KEY}`,
+      },
+    });
+    const data = await response.json();
+    console.log('characters full data', data);
+
+    const characterData = data.map((item) => ({
+      name: item.name,
+      birth: item.birth,
+      death: item.death,
+      dates: item.birth === item.death ? 'Unknown' : `${item.birth} - ${item.death}`,
+    }));
+    console.log('characters partial', characterData);
+
+    setCharacters(characterData);
   };
+
+  // dates one use a ternary (condiitonally set the property)
+  // propterty: something ? someValue : someOtherValue
+
+  // birth: "Before the Shaping of Arda"
+  // created_at: "2021-12-13T22:47:37+00:00"
+  // death: "01/25/3019"
+  // id: 1
+  // name: "Gandalf"
+  // race: "Maiar"
+
+  // Add your code here!
+  // 1. Get data using fetch from https://the-one-api.dev/v2/character/
+  // 2. Update the response data with the key `dates` which is a combination of
+  //    the `birth` key and the `death key` separated with a dash. If neither date
+  //    is provided, it should hold the string 'Unknown'
+  //    [
+  //       {name: 'Adanel', birth: "", death: "", dates: "Unknown", ...},
+  //       {name: 'Adrahil I', birth: "Before , TA 1944", death: "Late , Third Age", dates: "Before , TA 1944 - Late , Third Age", ...},
+  //       {name: 'Adrahil II', birth: "TA 2917", death: "TA 3010, dates: "TA 2917 - TA 3010", ...},
+  //    ]
+  // 3. Set the resulting transformation as state using setCharacters
+  // 4. You'll know it works if the characters show up on the page
 
   return (
     <div className="App">
@@ -88,7 +92,7 @@ function App() {
             <FilmList films={films} />
           </Route>
           <Route exact path="/characters">
-            <h1>hello 2</h1>
+            <CharacterList characters={characters} />
           </Route>
         </Switch>
       </BrowserRouter>
