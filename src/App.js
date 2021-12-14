@@ -22,7 +22,6 @@ function App() {
       },
     });
     const data = await response.json();
-    console.log(data);
     const filmData = data.map((film) => [
       film.title,
       film.title.toLowerCase().replace(/\s/g, '-'),
